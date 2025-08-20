@@ -1,8 +1,5 @@
 package org.example;
 
-import org.example.AdvanceReplace;
-import org.example.Replace;
-import org.example.SimpleReplace;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
