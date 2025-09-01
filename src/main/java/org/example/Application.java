@@ -1,12 +1,20 @@
 package org.example;
 
+import org.example.service.ReplaceFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.List;
+import java.util.function.Function;
 
 public class Application {
     public static void main(String[] args) {
+        var replaceName = System.getProperty("replaceName", "stack");
+        var replace = ReplaceFactory.getReplace(replaceName);
         var reader = new BufferedReader(new InputStreamReader(System.in));
+
+        System.out.println("replace implement: " + replace.getClass().getName());
 
         var tips = """
                 Example:
@@ -17,7 +25,7 @@ public class Application {
                 -> d
                 """;
         System.out.println(tips);
-        process(reader, new SimpleReplace());
+        process(reader, replace::simpleProcess);
 
         tips = """
                                 
@@ -32,25 +40,26 @@ public class Application {
                  -> d
                 """;
         System.out.println(tips);
-        process(reader, new AdvanceReplace());
+
+        process(reader, replace::advanceProcess);
 
     }
 
     /**
      * process input output
      *
-     * @param reader  console input
-     * @param replace replace handler
+     * @param reader   console input
+     * @param function replace handler
      */
-    public static void process(BufferedReader reader, Replace replace) {
+    public static void process(BufferedReader reader, Function<String, List<String>> function) {
         while (true) {
             try {
-                String line = reader.readLine();
+                var line = reader.readLine();
                 if ("".equals(line)) {
                     break;
                 }
                 System.out.println("Input:");
-                var output = replace.process(line.strip());
+                var output = function.apply(line.strip());
                 System.out.println("Output:");
                 output.forEach(row -> System.out.println("-> " + row));
                 System.out.println("Press Enter to end");
